@@ -26,7 +26,19 @@ export default function Main() {
         </input>
         <button>+ Add ingredient</button>
       </form>
-      <ul>{ingredientsListItems}</ul>
+      {ingredients.length > 0 &&
+      <section>
+        <h2>Ingredients on hand:</h2>
+        <ul className="ingredients-list">{ingredientsListItems}</ul>
+        {ingredients.length > 3 &&
+          <div className="get-recipe-container">
+            <div>
+              <h3>Ready for a recipe?</h3>
+              <p>Generate a recipe from your list of ingredients.</p>
+              <button>Get a recipe</button>
+            </div>
+          </div>}
+      </section>}
     </main>
   );
 }
