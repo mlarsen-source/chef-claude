@@ -1,40 +1,42 @@
-import React from 'react'
-import ClaudeRecipe from './ClaudeRecipe'
-import IngredientsList from './IngredientsList'
+import React from "react"
+import IngredientsList from "./IngredientsList"
+import ClaudeRecipe from "./ClaudeRecipe"
+import { getRecipeFromChefClaude } from "../ai"
 
 export default function Main() {
-  
-  const [ingredients, setIngredients] = React.useState([]);
-  const [recipeShown, setRecipeShown] = React.useState(false)
+  const [ingredients, setIngredients] = React.useState([])
+  const [recipe, setRecipe] = React.useState("")
 
-  function toggleRecipeShown() {
-    setRecipeShown(prevShown => !prevShown)
+  async function getRecipe() {
+    const recipeMarkdown = await getRecipeFromChefClaude(ingredients)
+    setRecipe(recipeMarkdown)
   }
-  
+
   function addIngredient(formData) {
-    const newIngredient = formData.get("ingredient");
-    setIngredients(prevIngredients=>([...prevIngredients, newIngredient]))
+    const newIngredient = formData.get("ingredient")
+    setIngredients(prevIngredients => [...prevIngredients, newIngredient])
   }
 
   return (
     <main>
-      <form
-        action={addIngredient}
-        className="ingredient-entry-form">
+      <form action={addIngredient} className="add-ingredient-form">
         <input
           type="text"
-          placeholder="e.g. chicken"
-          aria-label="add ingredient"
-          name="ingredient">
-        </input>
-        <button>+ Add ingredient</button>
+          placeholder="e.g. oregano"
+          aria-label="Add ingredient"
+          name="ingredient"
+        />
+        <button>Add ingredient</button>
       </form>
-      {ingredients.length > 0 && 
+
+      {ingredients.length > 0 &&
         <IngredientsList
           ingredients={ingredients}
-          toggle = {toggleRecipeShown}
-        />}      
-      {recipeShown && <ClaudeRecipe/>}
+          getRecipe={getRecipe}
+        />
+      }
+
+      {recipe && <ClaudeRecipe recipe={recipe} />}
     </main>
-  );
+  )
 }
